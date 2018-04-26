@@ -2,6 +2,8 @@ import { expect } from 'chai';
 import 'mocha';
 
 import calculateNewBoard from '../src/calculateNewBoard';
+import {checkIfMoveIsValid} from '../src/moveValidation';
+import { initialBoard } from '../src/initialBoard';
 
 describe('calculateNewBoard', () => {
   it('one move', () => {
@@ -52,3 +54,12 @@ describe('calculateNewBoard', () => {
     ]);
   });
 });
+
+describe.only('checkIfMoveIsValid', () => {
+  describe('rook', () => {
+    it('works', () => {
+      expect(checkIfMoveIsValid({from: {file: 'c', rank: 1}, to: {file: 'a', rank: 4}}, initialBoard)).equal(true)
+      
+    })
+  })
+})
