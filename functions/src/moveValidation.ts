@@ -44,7 +44,11 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
   const toIndex = squareToIndexOnBoard(move.to);
   const chessPieceToBeMoved = board[fromIndex];
   const toSquareContent = board[toIndex];
-  
+
+  if (chessPieceToBeMoved === -1 || toSquareContent === -1) {
+    return false;
+  }
+
   switch (chessPieceToBeMoved) {
     case ChessPiece.WhitePawn:
       const canMoveOneStepToEmptySquare =
