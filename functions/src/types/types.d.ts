@@ -8,3 +8,8 @@ interface MovePieceRequest {
   to: Square;
   roomId: string;
 }
+
+interface Move {
+  from: Square;
+  to: Square;
+}
