@@ -38,6 +38,15 @@ const isAnyBlackPiece = (piece: ChessPiece) =>
     ChessPiece.BlackQueen,
     ChessPiece.BlackKing
   ].includes(piece);
+const isAnyWhitePiece = (piece: ChessPiece) =>
+  [
+    ChessPiece.WhitePawn,
+    ChessPiece.WhiteRook,
+    ChessPiece.WhiteKnight,
+    ChessPiece.WhiteBishop,
+    ChessPiece.WhiteQueen,
+    ChessPiece.WhiteKing
+  ].includes(piece);
 
 export const checkIfMoveIsValid = (move: Move, board: number[]) => {
   const fromIndex = squareToIndexOnBoard(move.from);
@@ -50,7 +59,7 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
   }
 
   switch (chessPieceToBeMoved) {
-    case ChessPiece.WhitePawn:
+    case ChessPiece.WhitePawn: {
       const canMoveOneStepToEmptySquare =
         toIndex + lengthOfBoard === fromIndex &&
         toSquareContent === ChessPiece.None;
@@ -64,6 +73,22 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
         canMoveTwoStepToEmptySquareWhenAtStartingPosition ||
         canCaptureDiagonalOneStep
       );
+    }
+    case ChessPiece.BlackPawn: {
+      const canMoveOneStepToEmptySquare =
+        toIndex - lengthOfBoard === fromIndex &&
+        toSquareContent === ChessPiece.None;
+      const canMoveTwoStepToEmptySquareWhenAtStartingPosition =
+        toIndex - 2 * lengthOfBoard === fromIndex && move.from.rank === 7;
+      const canCaptureDiagonalOneStep =
+        isAnyWhitePiece(toSquareContent) &&
+        (toIndex - 9 === fromIndex || toIndex - 11 === fromIndex);
+      return (
+        canMoveOneStepToEmptySquare ||
+        canMoveTwoStepToEmptySquareWhenAtStartingPosition ||
+        canCaptureDiagonalOneStep
+      );
+    }
     default:
       console.log("Could not find matching chess piece!");
       return false;
