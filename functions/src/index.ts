@@ -2,7 +2,12 @@ import * as functions from "firebase-functions";
 
 import * as admin from "firebase-admin";
 import calculateNewBoard from "./calculateNewBoard";
-import { checkIfMoveIsValid } from "./moveValidation";
+import {
+  checkIfMoveIsValid,
+  isAnyBlackPiece,
+  isAnyWhitePiece
+} from "./moveValidation";
+import { initialBoard } from "./initialBoard";
 const cors = require("cors")({ origin: true });
 
 admin.initializeApp();
@@ -29,6 +34,8 @@ exports.addRoom = functions.https.onRequest((req, res) => {
   });
 });
 
+const isAnyPiece = piece => isAnyBlackPiece(piece) || isAnyWhitePiece(piece);
+
 exports.movePiece = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
     const { from, to, roomId }: MovePieceRequest = req.body;
@@ -36,14 +43,25 @@ exports.movePiece = functions.https.onRequest((req, res) => {
       const doc = await roomsRef.doc(roomId).get();
 
       // 1. calculate new board from doc.data().moves
-      const newBoard = calculateNewBoard(doc.data().moves);
+      const currentBoard = calculateNewBoard(initialBoard, doc.data().moves);
       // 2. check if move is valid
-      const isMoveValid = checkIfMoveIsValid({ from, to }, newBoard);
+      const isMoveValid = checkIfMoveIsValid({ from, to }, currentBoard);
       // 3. add new row to moves
 
       if (isMoveValid) {
+        const numberOfPiecesInCurrentTable = currentBoard.filter(isAnyPiece)
+          .length;
+        const boardAfterMove = calculateNewBoard(currentBoard, [{ from, to }]);
+        const numberOfPiecesInTableAfterMove = boardAfterMove.filter(isAnyPiece)
+          .length;
+        const hasCaptureHappened =
+          numberOfPiecesInTableAfterMove < numberOfPiecesInCurrentTable;
+
         try {
-          const newMoves = [...doc.data().moves, { from, to }];
+          const newMoves = [
+            ...doc.data().moves,
+            { from, to, hasCaptureHappened }
+          ];
           await doc.ref.update({ moves: newMoves });
           res.send({ moves: newMoves });
         } catch (error) {

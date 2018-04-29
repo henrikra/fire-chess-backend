@@ -1,10 +1,9 @@
-import { initialBoard } from "./initialBoard";
+import { squareToIndexOnBoard } from "./moveValidation";
 
-export default (moves: Move[]) => {
-  // return moves.reduce((acc, move) => {
-  //   acc[move.to] = acc[move.from];
-  //   acc[move.from] = 0;
-  //   return acc;
-  // }, initialBoard);
-  return initialBoard
+export default (board: number[], moves: Move[]) => {
+  return moves.reduce((acc, move) => {
+    acc[squareToIndexOnBoard(move.to)] = acc[squareToIndexOnBoard(move.from)];
+    acc[squareToIndexOnBoard(move.from)] = 0;
+    return acc;
+  }, [...board]);
 }

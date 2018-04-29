@@ -27,9 +27,9 @@ const FileIndex = {
 
 const bottomLeftIndex = 91;
 const lengthOfBoard = 10;
-const squareToIndexOnBoard = (square: Square) =>
+export const squareToIndexOnBoard = (square: Square) =>
   bottomLeftIndex - (square.rank - 1) * lengthOfBoard + FileIndex[square.file];
-const isAnyBlackPiece = (piece: ChessPiece) =>
+export const isAnyBlackPiece = (piece: ChessPiece) =>
   [
     ChessPiece.BlackPawn,
     ChessPiece.BlackRook,
@@ -38,7 +38,7 @@ const isAnyBlackPiece = (piece: ChessPiece) =>
     ChessPiece.BlackQueen,
     ChessPiece.BlackKing
   ].includes(piece);
-const isAnyWhitePiece = (piece: ChessPiece) =>
+export const isAnyWhitePiece = (piece: ChessPiece) =>
   [
     ChessPiece.WhitePawn,
     ChessPiece.WhiteRook,
