@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
-
 import * as admin from "firebase-admin";
+
 import calculateNewBoard from "./calculateNewBoard";
 import {
   checkIfMoveIsValid,
@@ -40,10 +40,11 @@ exports.movePiece = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
     const { from, to, roomId }: MovePieceRequest = req.body;
     try {
-      const doc = await roomsRef.doc(roomId).get();
+      const roomDoc = await roomsRef.doc(roomId).get();
+      const currentMoves = roomDoc.data().moves;
 
       // 1. calculate new board from doc.data().moves
-      const currentBoard = calculateNewBoard(initialBoard, doc.data().moves);
+      const currentBoard = calculateNewBoard(initialBoard, currentMoves);
       // 2. check if move is valid
       const isMoveValid = checkIfMoveIsValid({ from, to }, currentBoard);
       // 3. add new row to moves
@@ -58,11 +59,8 @@ exports.movePiece = functions.https.onRequest((req, res) => {
           numberOfPiecesInTableAfterMove < numberOfPiecesInCurrentTable;
 
         try {
-          const newMoves = [
-            ...doc.data().moves,
-            { from, to, hasCaptureHappened }
-          ];
-          await doc.ref.update({ moves: newMoves });
+          const newMoves = [...currentMoves, { from, to, hasCaptureHappened }];
+          await roomDoc.ref.update({ moves: newMoves });
           res.send({ moves: newMoves });
         } catch (error) {
           console.error("Error updating moves", error);
