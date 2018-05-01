@@ -17,11 +17,12 @@ const roomsRef = database.collection("rooms");
 
 exports.addRoom = functions.https.onRequest((req, res) => {
   cors(req, res, () => {
+    const isWhite = Math.random() < 0.5;
+
     roomsRef
       .add({
-        title: "Chess room",
-        isGameOver: false,
-        moves: []
+        moves: [],
+        [isWhite ? 'whitePlayerId' : 'blackPlayerId']: 'ofdsofk'
       })
       .then(doc => {
         console.log("Document written with ID: ", doc.id);
