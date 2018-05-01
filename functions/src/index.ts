@@ -19,13 +19,19 @@ app.use(cors)
 const database = admin.firestore();
 const roomsRef = database.collection("rooms");
 
-app.get('/addRoom', (req, res) => {
+app.post('/addRoom', (req, res) => {
+  const { userId }: CreateRoomRequest = req.body;
+  if (!userId) {
+    res.status(400).send({ error: 'User is missing' })
+    return;
+  }
+  
   const isWhite = Math.random() < 0.5;
 
   roomsRef
     .add({
       moves: [],
-      [isWhite ? 'whitePlayerId' : 'blackPlayerId']: 'ofdsofk'
+      [isWhite ? 'whitePlayerId' : 'blackPlayerId']: userId
     })
     .then(doc => {
       console.log("Document written with ID: ", doc.id);
@@ -40,7 +46,7 @@ app.get('/addRoom', (req, res) => {
 const isAnyPiece = piece => isAnyBlackPiece(piece) || isAnyWhitePiece(piece);
 
 app.post('/movePiece', async (req, res) => {
-  const { from, to, roomId }: MovePieceRequest = req.body;
+  const { from, to, roomId, userId }: MovePieceRequest = req.body;
   try {
     const roomDoc = await roomsRef.doc(roomId).get();
     const currentMoves = roomDoc.data().moves;

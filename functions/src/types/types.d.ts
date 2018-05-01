@@ -7,6 +7,11 @@ interface MovePieceRequest {
   from: Square;
   to: Square;
   roomId: string;
+  userId: string;
+}
+
+interface CreateRoomRequest {
+  userId: string;
 }
 
 interface Move {
