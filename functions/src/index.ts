@@ -47,6 +47,11 @@ const isAnyPiece = piece => isAnyBlackPiece(piece) || isAnyWhitePiece(piece);
 
 app.post('/movePiece', async (req, res) => {
   const { from, to, roomId, userId }: MovePieceRequest = req.body;
+  if (!userId) {
+    res.status(400).send({ error: 'User is missing' })
+    return;
+  }
+  
   try {
     const roomDoc = await roomsRef.doc(roomId).get();
     const currentMoves = roomDoc.data().moves;
