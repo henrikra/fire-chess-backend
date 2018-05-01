@@ -14,6 +14,11 @@ interface CreateRoomRequest {
   userId: string;
 }
 
+interface JoinGameRequest {
+  roomId: string;
+  userId: string;
+}
+
 interface Move {
   from: Square;
   to: Square;
