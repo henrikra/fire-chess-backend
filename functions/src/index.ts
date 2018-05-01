@@ -19,27 +19,22 @@ app.use(cors);
 const database = admin.firestore();
 const roomsRef = database.collection("rooms");
 
-app.post("/addRoom", (req, res) => {
+app.post("/addRoom", async (req, res) => {
   const { userId }: CreateRoomRequest = req.body;
   if (!userId) {
     res.status(400).send({ error: "User is missing" });
     return;
   }
 
-  const isWhite = Math.random() < 0.5;
-  roomsRef
-    .add({
-      moves: [],
-      [isWhite ? "whitePlayerId" : "blackPlayerId"]: userId
-    })
-    .then(doc => {
-      console.log("Document written with ID: ", doc.id);
-      res.send({ roomId: doc.id });
-    })
-    .catch(error => {
-      console.error("Error adding document: ", error);
-      res.status(500).send("fucked up");
-    });
+  try {
+    const isWhite = Math.random() < 0.5;
+    const doc = await roomsRef.add({ moves: [] });
+    const doc2 = await doc.collection("roomPlayers").add({ userId, isWhite });
+    res.send({ roomId: doc.id });
+  } catch (error) {
+    console.error("Error creating room", error);
+    res.status(500).send({ error: "Error creating room" });
+  }
 });
 
 app.post("/joinGame", async (req, res) => {
@@ -53,21 +48,30 @@ app.post("/joinGame", async (req, res) => {
     return;
   }
   try {
-    const roomDoc = await roomsRef.doc(roomId).get();
-    const { whitePlayerId, blackPlayerId } = roomDoc.data();
-
-    if (whitePlayerId && blackPlayerId) {
-      res.status(403).send({ error: "Can't join a full game" });
-      return;
-    }
+    const roomPlayers = roomsRef.doc(roomId).collection("roomPlayers");
+    const players = await roomPlayers.get();
+    const possibleWhitePlayer = players.docs
+      .map(doc => doc.data())
+      .find(player => player.isWhite);
+    const possibleBlackPlayer = players.docs
+      .map(doc => doc.data())
+      .find(player => !player.isWhite);
+    const whitePlayerId = possibleWhitePlayer
+      ? possibleWhitePlayer.userId
+      : undefined;
+    const blackPlayerId = possibleBlackPlayer
+      ? possibleBlackPlayer.userId
+      : undefined;
     if (whitePlayerId === userId || blackPlayerId === userId) {
       res.status(403).send({ error: "You have already joined the game" });
       return;
     }
+    if (whitePlayerId && blackPlayerId) {
+      res.status(403).send({ error: "Can't join a full game" });
+      return;
+    }
 
-    await roomDoc.ref.update({
-      [whitePlayerId ? "blackPlayerId" : "whitePlayerId"]: userId
-    });
+    await roomPlayers.add({ userId, isWhite: !whitePlayerId });
     res.send({ success: "You have joined the game" });
   } catch (error) {
     console.error("Error getting document: ", error);
