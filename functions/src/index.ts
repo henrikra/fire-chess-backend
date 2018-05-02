@@ -29,7 +29,12 @@ app.post("/addRoom", async (req, res) => {
   try {
     const isWhite = Math.random() < 0.5;
     const doc = await roomsRef.add({ moves: [] });
-    const doc2 = await doc.collection("roomPlayers").add({ userId, isWhite });
+    await doc
+      .collection("roomPlayers")
+      .doc(doc.id)
+      .set({
+        [isWhite ? "whitePlayerId" : "blackPlayerId"]: userId
+      });
     res.send({ roomId: doc.id });
   } catch (error) {
     console.error("Error creating room", error);
@@ -48,20 +53,12 @@ app.post("/joinGame", async (req, res) => {
     return;
   }
   try {
-    const roomPlayers = roomsRef.doc(roomId).collection("roomPlayers");
-    const players = await roomPlayers.get();
-    const possibleWhitePlayer = players.docs
-      .map(doc => doc.data())
-      .find(player => player.isWhite);
-    const possibleBlackPlayer = players.docs
-      .map(doc => doc.data())
-      .find(player => !player.isWhite);
-    const whitePlayerId = possibleWhitePlayer
-      ? possibleWhitePlayer.userId
-      : undefined;
-    const blackPlayerId = possibleBlackPlayer
-      ? possibleBlackPlayer.userId
-      : undefined;
+    const roomPlayersRef = roomsRef
+      .doc(roomId)
+      .collection("roomPlayers")
+      .doc(roomId);
+    const roomPlayers = await roomPlayersRef.get();
+    const { whitePlayerId, blackPlayerId } = roomPlayers.data();
     if (whitePlayerId === userId || blackPlayerId === userId) {
       res.status(403).send({ error: "You have already joined the game" });
       return;
@@ -70,8 +67,9 @@ app.post("/joinGame", async (req, res) => {
       res.status(403).send({ error: "Can't join a full game" });
       return;
     }
-
-    await roomPlayers.add({ userId, isWhite: !whitePlayerId });
+    await roomPlayersRef.update({
+      [whitePlayerId ? "blackPlayerId" : "whitePlayerId"]: userId
+    });
     res.send({ success: "You have joined the game" });
   } catch (error) {
     console.error("Error getting document: ", error);
