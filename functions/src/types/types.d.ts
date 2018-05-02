@@ -23,3 +23,8 @@ interface Move {
   from: Square;
   to: Square;
 }
+
+interface RoomPlayersModel {
+  whitePlayerId?: string;
+  blackPlayerId?: string;
+}

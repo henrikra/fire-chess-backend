@@ -52,13 +52,17 @@ app.post("/joinGame", async (req, res) => {
     res.status(400).send({ error: "No user specified" });
     return;
   }
+
   try {
     const roomPlayersRef = roomsRef
       .doc(roomId)
       .collection("roomPlayers")
       .doc(roomId);
     const roomPlayers = await roomPlayersRef.get();
-    const { whitePlayerId, blackPlayerId } = roomPlayers.data();
+    const {
+      whitePlayerId,
+      blackPlayerId
+    } = roomPlayers.data() as RoomPlayersModel;
     if (whitePlayerId === userId || blackPlayerId === userId) {
       res.status(403).send({ error: "You have already joined the game" });
       return;
