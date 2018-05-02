@@ -109,6 +109,21 @@ app.post("/movePiece", async (req, res) => {
         .send({ error: "You can\'t move pieces until all players have joined" });
       return;
     }
+
+    const isWhiteTurn = currentMoves.length % 2 === 0;
+    const isBlackTurn = !isWhiteTurn;
+    if (isWhiteTurn && userId !== whitePlayerId) {
+      res
+        .status(403)
+        .send({ error: "You have to wait until white makes its move" });
+      return;
+    }
+    if (isBlackTurn && userId !== blackPlayerId) {
+      res
+        .status(403)
+        .send({ error: "You have to wait until black makes its move" });
+      return;
+    }
     // 1. calculate new board from doc.data().moves
     const currentBoard = calculateNewBoard(initialBoard, currentMoves);
     // 2. check if move is valid
