@@ -94,6 +94,21 @@ app.post("/movePiece", async (req, res) => {
     const roomDoc = await roomsRef.doc(roomId).get();
     const currentMoves = roomDoc.data().moves;
 
+    const roomPlayersDoc = await roomDoc.ref
+      .collection("roomPlayers")
+      .doc(roomDoc.id)
+      .get();
+    const {
+      blackPlayerId,
+      whitePlayerId
+    } = roomPlayersDoc.data() as RoomPlayersModel;
+
+    if (!blackPlayerId || !whitePlayerId) {
+      res
+        .status(403)
+        .send({ error: "You can\'t move pieces until all players have joined" });
+      return;
+    }
     // 1. calculate new board from doc.data().moves
     const currentBoard = calculateNewBoard(initialBoard, currentMoves);
     // 2. check if move is valid
