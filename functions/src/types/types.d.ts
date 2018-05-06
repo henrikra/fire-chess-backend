@@ -28,3 +28,8 @@ interface RoomPlayersModel {
   whitePlayerId?: string;
   blackPlayerId?: string;
 }
+
+interface WhoAmIRequest {
+  roomId: string;
+  userId: string;
+}
