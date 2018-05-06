@@ -28,7 +28,7 @@ app.post("/addRoom", async (req, res) => {
 
   try {
     const isWhite = Math.random() < 0.5;
-    const doc = await roomsRef.add({ moves: [] });
+    const doc = await roomsRef.add({ moves: [], isGameFull: false });
     await doc
       .collection("roomPlayers")
       .doc(doc.id)
@@ -54,10 +54,8 @@ app.post("/joinGame", async (req, res) => {
   }
 
   try {
-    const roomPlayersRef = roomsRef
-      .doc(roomId)
-      .collection("roomPlayers")
-      .doc(roomId);
+    const roomRef = roomsRef.doc(roomId);
+    const roomPlayersRef = roomRef.collection("roomPlayers").doc(roomId);
     const roomPlayers = await roomPlayersRef.get();
     const {
       whitePlayerId,
@@ -74,6 +72,7 @@ app.post("/joinGame", async (req, res) => {
     await roomPlayersRef.update({
       [whitePlayerId ? "blackPlayerId" : "whitePlayerId"]: userId
     });
+    await roomRef.update({ isGameFull: true });
     res.send({ success: "You have joined the game" });
   } catch (error) {
     console.error("Error getting document: ", error);
@@ -106,7 +105,7 @@ app.post("/movePiece", async (req, res) => {
     if (!blackPlayerId || !whitePlayerId) {
       res
         .status(403)
-        .send({ error: "You can\'t move pieces until all players have joined" });
+        .send({ error: "You can't move pieces until all players have joined" });
       return;
     }
 
