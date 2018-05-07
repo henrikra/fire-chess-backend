@@ -1,4 +1,5 @@
 import { roomsRef } from "../database";
+import { Response, Request } from "express";
 
 const myRole = (userId: string, roomPlayers: RoomPlayersModel) => {
   if (userId === roomPlayers.blackPlayerId) {
@@ -10,7 +11,7 @@ const myRole = (userId: string, roomPlayers: RoomPlayersModel) => {
   }
 };
 
-export default async (req, res) => {
+export default async (req: Request, res: Response) => {
   const { roomId, userId }: WhoAmIRequest = req.query;
   if (!roomId) {
     res.status(400).send({ error: "No room specified" });

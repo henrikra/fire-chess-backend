@@ -1,6 +1,7 @@
 import { roomsRef } from "../database";
+import { Request, Response } from "express";
 
-export default async (req, res) => {
+export default async (req: Request, res: Response) => {
   const { roomId, userId }: JoinGameRequest = req.body;
   if (!roomId) {
     res.status(400).send({ error: "No room specified" });

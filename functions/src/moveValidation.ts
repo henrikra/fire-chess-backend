@@ -47,6 +47,7 @@ export const isAnyWhitePiece = (piece: ChessPiece) =>
     ChessPiece.WhiteQueen,
     ChessPiece.WhiteKing
   ].includes(piece);
+  export const isAnyPiece = (piece: ChessPiece) => isAnyBlackPiece(piece) || isAnyWhitePiece(piece);
 
 export const checkIfMoveIsValid = (move: Move, board: number[]) => {
   const fromIndex = squareToIndexOnBoard(move.from);

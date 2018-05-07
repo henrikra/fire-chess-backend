@@ -1,11 +1,10 @@
 import { roomsRef } from "../database";
 import calculateNewBoard from "../calculateNewBoard";
 import { initialBoard } from "../initialBoard";
-import { checkIfMoveIsValid, isAnyBlackPiece, isAnyWhitePiece } from "../moveValidation";
+import { checkIfMoveIsValid, isAnyBlackPiece, isAnyWhitePiece, isAnyPiece } from "../moveValidation";
+import { Request, Response } from "express";
 
-const isAnyPiece = piece => isAnyBlackPiece(piece) || isAnyWhitePiece(piece);
-
-export default async (req, res) => {
+export default async (req: Request, res: Response) => {
   const { from, to, roomId, userId }: MovePieceRequest = req.body;
   if (!userId) {
     res.status(400).send({ error: "User is missing" });
