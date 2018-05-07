@@ -7,7 +7,7 @@ import { initialBoard } from '../initialBoard';
 
 describe('calculateNewBoard', () => {
   it('one move', () => {
-    const moves = [{from: {file: 'e', rank: 2}, to: {file: 'e', rank: 4}}];
+    const moves: Move[] = [{from: {file: 'e', rank: 2}, to: {file: 'e', rank: 4}}];
     expect(calculateNewBoard(initialBoard, moves)).deep.equal([
       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -25,7 +25,7 @@ describe('calculateNewBoard', () => {
   });
 
   it('two moves', () => {
-    const moves = [
+    const moves: Move[] = [
       {from: {file: 'e', rank: 2}, to: {file: 'e', rank: 4}},
       {from: {file: 'd', rank: 7}, to: {file: 'd', rank: 5}},
     ];
@@ -46,7 +46,7 @@ describe('calculateNewBoard', () => {
   });
 
   it('three moves', () => {
-    const moves = [
+    const moves: Move[] = [
       {from: {file: 'e', rank: 2}, to: {file: 'e', rank: 4}},
       {from: {file: 'd', rank: 7}, to: {file: 'd', rank: 5}},
       {from: {file: 'e', rank: 4}, to: {file: 'd', rank: 5}},
@@ -332,3 +332,5 @@ describe('checkIfMoveIsValid', () => {
     });
   });
 })
+
+// kun liikutat sotilas kaksi ruutu tsekkaa että välissä ei ole nappuloita

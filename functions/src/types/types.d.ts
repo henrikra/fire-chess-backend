@@ -1,5 +1,5 @@
 interface Square {
-  file: string;
+  file: "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h";
   rank: number;
 }
 
