@@ -47,7 +47,8 @@ export const isAnyWhitePiece = (piece: ChessPiece) =>
     ChessPiece.WhiteQueen,
     ChessPiece.WhiteKing
   ].includes(piece);
-  export const isAnyPiece = (piece: ChessPiece) => isAnyBlackPiece(piece) || isAnyWhitePiece(piece);
+export const isAnyPiece = (piece: ChessPiece) =>
+  isAnyBlackPiece(piece) || isAnyWhitePiece(piece);
 
 export const checkIfMoveIsValid = (move: Move, board: number[]) => {
   const fromIndex = squareToIndexOnBoard(move.from);
@@ -88,6 +89,30 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
         canMoveOneStepToEmptySquare ||
         canMoveTwoStepToEmptySquareWhenAtStartingPosition ||
         canCaptureDiagonalOneStep
+      );
+    }
+    case ChessPiece.BlackKnight:
+    case ChessPiece.WhiteKnight: {
+      const canMoveTwoUpOneLeft = fromIndex - 2 * lengthOfBoard - 1 === toIndex;
+      const canMoveTwoUpOneRight =
+      fromIndex - 2 * lengthOfBoard + 1 === toIndex;
+      const canMoveTwoDownOneLeft =
+      fromIndex + 2 * lengthOfBoard - 1 === toIndex;
+      const canMoveTwoDownOneRight =
+      fromIndex + 2 * lengthOfBoard + 1 === toIndex;
+      const canMoveTwoLeftOneUp = fromIndex - 2 - lengthOfBoard === toIndex;
+      const canMoveTwoLeftOneDown = fromIndex - 2 + lengthOfBoard === toIndex;
+      const canMoveTwoRightOneUp = fromIndex + 2 - lengthOfBoard === toIndex;
+      const canMoveTwoRightOneDown = fromIndex + 2 + lengthOfBoard === toIndex;
+      return (
+        canMoveTwoUpOneLeft ||
+        canMoveTwoUpOneRight ||
+        canMoveTwoDownOneLeft ||
+        canMoveTwoDownOneRight ||
+        canMoveTwoLeftOneUp ||
+        canMoveTwoLeftOneDown ||
+        canMoveTwoRightOneUp ||
+        canMoveTwoRightOneDown
       );
     }
     default:
