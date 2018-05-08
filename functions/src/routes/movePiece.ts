@@ -3,9 +3,9 @@ import calculateNewBoard from "../calculateNewBoard";
 import { initialBoard } from "../initialBoard";
 import {
   checkIfMoveIsValid,
-  isAnyBlackPiece,
-  isAnyWhitePiece,
-  isAnyPiece,
+  isBlackPiece,
+  isWhitePiece,
+  isWhiteOrBlackPiece,
   squareToIndexOnBoard
 } from "../moveValidation";
 import { Request, Response } from "express";
@@ -54,11 +54,11 @@ export default async (req: Request, res: Response) => {
 
     const currentBoard = calculateNewBoard(initialBoard, currentMoves);
 
-    const fromBoardIndex = squareToIndexOnBoard(from);
-    const fromChessPiece = currentBoard[fromBoardIndex];
+    const fromBoardIndex = squareToIndexOnBoard(from); // nämä kaksi riviä ovat identtiset moveValidation.ts kanssa
+    const fromChessPiece = currentBoard[fromBoardIndex]; //
     if (
-      (isWhiteTurn && !isAnyWhitePiece(fromChessPiece)) ||
-      (isBlackTurn && !isAnyBlackPiece(fromChessPiece))
+      (isWhiteTurn && !isWhitePiece(fromChessPiece)) ||
+      (isBlackTurn && !isBlackPiece(fromChessPiece))
     ) {
       res
         .status(403)
@@ -69,11 +69,13 @@ export default async (req: Request, res: Response) => {
     const isMoveValid = checkIfMoveIsValid({ from, to }, currentBoard);
 
     if (isMoveValid) {
-      const numberOfPiecesInCurrentTable = currentBoard.filter(isAnyPiece)
-        .length;
+      const numberOfPiecesInCurrentTable = currentBoard.filter(
+        isWhiteOrBlackPiece
+      ).length;
       const boardAfterMove = calculateNewBoard(currentBoard, [{ from, to }]);
-      const numberOfPiecesInTableAfterMove = boardAfterMove.filter(isAnyPiece)
-        .length;
+      const numberOfPiecesInTableAfterMove = boardAfterMove.filter(
+        isWhiteOrBlackPiece
+      ).length;
       const hasCaptureHappened =
         numberOfPiecesInTableAfterMove < numberOfPiecesInCurrentTable;
 

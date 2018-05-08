@@ -29,7 +29,7 @@ const bottomLeftIndex = 91;
 const lengthOfBoard = 10;
 export const squareToIndexOnBoard = (square: Square) =>
   bottomLeftIndex - (square.rank - 1) * lengthOfBoard + FileIndex[square.file];
-export const isAnyBlackPiece = (piece: ChessPiece) =>
+export const isBlackPiece = (piece: ChessPiece) =>
   [
     ChessPiece.BlackPawn,
     ChessPiece.BlackRook,
@@ -38,7 +38,7 @@ export const isAnyBlackPiece = (piece: ChessPiece) =>
     ChessPiece.BlackQueen,
     ChessPiece.BlackKing
   ].includes(piece);
-export const isAnyWhitePiece = (piece: ChessPiece) =>
+export const isWhitePiece = (piece: ChessPiece) =>
   [
     ChessPiece.WhitePawn,
     ChessPiece.WhiteRook,
@@ -47,8 +47,8 @@ export const isAnyWhitePiece = (piece: ChessPiece) =>
     ChessPiece.WhiteQueen,
     ChessPiece.WhiteKing
   ].includes(piece);
-export const isAnyPiece = (piece: ChessPiece) =>
-  isAnyBlackPiece(piece) || isAnyWhitePiece(piece);
+export const isWhiteOrBlackPiece = (piece: ChessPiece) =>
+  isBlackPiece(piece) || isWhitePiece(piece);
 
 export const checkIfMoveIsValid = (move: Move, board: number[]) => {
   const fromIndex = squareToIndexOnBoard(move.from);
@@ -60,9 +60,8 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
     return false;
   }
   if (
-    (isAnyWhitePiece(chessPieceToBeMoved) &&
-      isAnyWhitePiece(toSquareContent)) ||
-    (isAnyBlackPiece(chessPieceToBeMoved) && isAnyBlackPiece(toSquareContent))
+    (isWhitePiece(chessPieceToBeMoved) && isWhitePiece(toSquareContent)) ||
+    (isBlackPiece(chessPieceToBeMoved) && isBlackPiece(toSquareContent))
   ) {
     return false;
   }
@@ -75,7 +74,7 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
       const canMoveTwoStepToEmptySquareWhenAtStartingPosition =
         toIndex + 2 * lengthOfBoard === fromIndex && move.from.rank === 2;
       const canCaptureDiagonalOneStep =
-        isAnyBlackPiece(toSquareContent) &&
+        isBlackPiece(toSquareContent) &&
         (toIndex + 9 === fromIndex || toIndex + 11 === fromIndex);
       return (
         canMoveOneStepToEmptySquare ||
@@ -90,7 +89,7 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
       const canMoveTwoStepToEmptySquareWhenAtStartingPosition =
         toIndex - 2 * lengthOfBoard === fromIndex && move.from.rank === 7;
       const canCaptureDiagonalOneStep =
-        isAnyWhitePiece(toSquareContent) &&
+        isWhitePiece(toSquareContent) &&
         (toIndex - 9 === fromIndex || toIndex - 11 === fromIndex);
       return (
         canMoveOneStepToEmptySquare ||
