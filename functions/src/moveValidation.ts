@@ -59,6 +59,13 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
   if (chessPieceToBeMoved === -1 || toSquareContent === -1) {
     return false;
   }
+  if (
+    (isAnyWhitePiece(chessPieceToBeMoved) &&
+      isAnyWhitePiece(toSquareContent)) ||
+    (isAnyBlackPiece(chessPieceToBeMoved) && isAnyBlackPiece(toSquareContent))
+  ) {
+    return false;
+  }
 
   switch (chessPieceToBeMoved) {
     case ChessPiece.WhitePawn: {
@@ -95,11 +102,11 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
     case ChessPiece.WhiteKnight: {
       const canMoveTwoUpOneLeft = fromIndex - 2 * lengthOfBoard - 1 === toIndex;
       const canMoveTwoUpOneRight =
-      fromIndex - 2 * lengthOfBoard + 1 === toIndex;
+        fromIndex - 2 * lengthOfBoard + 1 === toIndex;
       const canMoveTwoDownOneLeft =
-      fromIndex + 2 * lengthOfBoard - 1 === toIndex;
+        fromIndex + 2 * lengthOfBoard - 1 === toIndex;
       const canMoveTwoDownOneRight =
-      fromIndex + 2 * lengthOfBoard + 1 === toIndex;
+        fromIndex + 2 * lengthOfBoard + 1 === toIndex;
       const canMoveTwoLeftOneUp = fromIndex - 2 - lengthOfBoard === toIndex;
       const canMoveTwoLeftOneDown = fromIndex - 2 + lengthOfBoard === toIndex;
       const canMoveTwoRightOneUp = fromIndex + 2 - lengthOfBoard === toIndex;
