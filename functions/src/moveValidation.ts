@@ -50,6 +50,46 @@ export const isWhitePiece = (piece: ChessPiece) =>
 export const isWhiteOrBlackPiece = (piece: ChessPiece) =>
   isBlackPiece(piece) || isWhitePiece(piece);
 
+const isPieceOrOutOfBounds = (content: number) =>
+  content === -1 || isWhiteOrBlackPiece(content);
+
+const canMoveRightTo = (
+  fromIndex: number,
+  toIndex: number,
+  board: number[]
+) => {
+  for (let i = fromIndex + 1; i < toIndex; i++) {
+    if (isPieceOrOutOfBounds(board[i])) {
+      return false;
+    }
+  }
+  return true;
+};
+const canMoveLeftTo = (fromIndex: number, toIndex: number, board: number[]) => {
+  for (let i = fromIndex - 1; i > toIndex; i--) {
+    if (isPieceOrOutOfBounds(board[i])) {
+      return false;
+    }
+  }
+  return true;
+};
+const canMoveDownTo = (fromIndex: number, toIndex: number, board: number[]) => {
+  for (let i = fromIndex + lengthOfBoard; i < toIndex; i += lengthOfBoard) {
+    if (isPieceOrOutOfBounds(board[i])) {
+      return false;
+    }
+  }
+  return true;
+};
+const canMoveUpTo = (fromIndex: number, toIndex: number, board: number[]) => {
+  for (let i = fromIndex - lengthOfBoard; i > toIndex; i -= lengthOfBoard) {
+    if (isPieceOrOutOfBounds(board[i])) {
+      return false;
+    }
+  }
+  return true;
+};
+
 export const checkIfMoveIsValid = (move: Move, board: number[]) => {
   const fromIndex = squareToIndexOnBoard(move.from);
   const toIndex = squareToIndexOnBoard(move.to);
@@ -145,44 +185,4 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
       console.log("Could not find matching chess piece!");
       return false;
   }
-};
-
-const isPieceOrOutOfBounds = (content: number) =>
-  content === -1 || isWhiteOrBlackPiece(content);
-
-const canMoveRightTo = (
-  fromIndex: number,
-  toIndex: number,
-  board: number[]
-) => {
-  for (let i = fromIndex + 1; i < toIndex; i++) {
-    if (isPieceOrOutOfBounds(board[i])) {
-      return false;
-    }
-  }
-  return true;
-};
-const canMoveLeftTo = (fromIndex: number, toIndex: number, board: number[]) => {
-  for (let i = fromIndex - 1; i > toIndex; i--) {
-    if (isPieceOrOutOfBounds(board[i])) {
-      return false;
-    }
-  }
-  return true;
-};
-const canMoveDownTo = (fromIndex: number, toIndex: number, board: number[]) => {
-  for (let i = fromIndex + lengthOfBoard; i < toIndex; i += lengthOfBoard) {
-    if (isPieceOrOutOfBounds(board[i])) {
-      return false;
-    }
-  }
-  return true;
-};
-const canMoveUpTo = (fromIndex: number, toIndex: number, board: number[]) => {
-  for (let i = fromIndex - lengthOfBoard; i > toIndex; i -= lengthOfBoard) {
-    if (isPieceOrOutOfBounds(board[i])) {
-      return false;
-    }
-  }
-  return true;
 };
