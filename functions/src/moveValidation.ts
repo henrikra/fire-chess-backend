@@ -172,7 +172,7 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
           const canMoveToRight = canMoveRightTo(fromIndex, toIndex, board);
           return canMoveToRight;
         } else {
-          if ((toIndex - fromIndex) % 10 === 0) {
+          if ((toIndex - fromIndex) % lengthOfBoard === 0) {
             const canMoveToDown = canMoveDownTo(fromIndex, toIndex, board);
             return canMoveToDown;
           }
@@ -183,7 +183,7 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
           const canMoveToLeft = canMoveLeftTo(fromIndex, toIndex, board);
           return canMoveToLeft;
         } else {
-          if ((fromIndex - toIndex) % 10 === 0) {
+          if ((fromIndex - toIndex) % lengthOfBoard === 0) {
             const canMoveToUp = canMoveUpTo(fromIndex, toIndex, board);
             return canMoveToUp;
           }
