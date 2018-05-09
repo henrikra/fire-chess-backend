@@ -167,29 +167,18 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
     }
     case ChessPiece.BlackRook:
     case ChessPiece.WhiteRook: {
-      if (fromIndex < toIndex) {
-        if (toIndex - fromIndex < lengthOfBoard) {
-          const canMoveToRight = canMoveRightTo(fromIndex, toIndex, board);
-          return canMoveToRight;
-        } else {
-          if ((toIndex - fromIndex) % lengthOfBoard === 0) {
-            const canMoveToDown = canMoveDownTo(fromIndex, toIndex, board);
-            return canMoveToDown;
-          }
-          return false;
+      if (move.from.file === move.to.file) {
+        if (move.from.rank < move.to.rank) {
+          return canMoveUpTo(fromIndex, toIndex, board);
         }
-      } else {
-        if (fromIndex - toIndex < lengthOfBoard) {
-          const canMoveToLeft = canMoveLeftTo(fromIndex, toIndex, board);
-          return canMoveToLeft;
-        } else {
-          if ((fromIndex - toIndex) % lengthOfBoard === 0) {
-            const canMoveToUp = canMoveUpTo(fromIndex, toIndex, board);
-            return canMoveToUp;
-          }
-          return false;
+        return canMoveDownTo(fromIndex, toIndex, board);
+      } else if (move.from.rank === move.to.rank) {
+        if (FileIndex[move.from.file] < FileIndex[move.to.file]) {
+          return canMoveRightTo(fromIndex, toIndex, board);
         }
+        return canMoveLeftTo(fromIndex, toIndex, board);
       }
+      return false;
     }
     default:
       console.log("Could not find matching chess piece!");

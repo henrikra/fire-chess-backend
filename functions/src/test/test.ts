@@ -536,7 +536,7 @@ describe('checkIfMoveIsValid', () => {
       ])).equal(false);
     });
 
-    it('cannot capture diagonal', () => {
+    it('cannot capture diagonal inverted', () => {
       expect(checkIfMoveIsValid({
         from: { file: 'h', rank: 3 },
         to: { file: 'f', rank: 5 }
