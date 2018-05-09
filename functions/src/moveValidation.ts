@@ -121,8 +121,68 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
         canMoveTwoRightOneDown
       );
     }
+    case ChessPiece.BlackRook:
+    case ChessPiece.WhiteRook: {
+      if (fromIndex < toIndex) {
+        if (toIndex - fromIndex < lengthOfBoard) {
+          const canMoveToRight = canMoveRightTo(fromIndex, toIndex, board);
+          return canMoveToRight;
+        } else {
+          const canMoveToDown = canMoveDownTo(fromIndex, toIndex, board);
+          return canMoveToDown;
+        }
+      } else {
+        if (fromIndex - toIndex < lengthOfBoard) {
+          const canMoveToLeft = canMoveLeftTo(fromIndex, toIndex, board);
+          return canMoveToLeft;
+        } else {
+          const canMoveToUp = canMoveUpTo(fromIndex, toIndex, board);
+          return canMoveToUp;
+        }
+      }
+    }
     default:
       console.log("Could not find matching chess piece!");
       return false;
   }
+};
+
+const isPieceOrOutOfBounds = (content: number) =>
+  content === -1 || isWhiteOrBlackPiece(content);
+
+const canMoveRightTo = (
+  fromIndex: number,
+  toIndex: number,
+  board: number[]
+) => {
+  for (let i = fromIndex + 1; i < toIndex; i++) {
+    if (isPieceOrOutOfBounds(board[i])) {
+      return false;
+    }
+  }
+  return true;
+};
+const canMoveLeftTo = (fromIndex: number, toIndex: number, board: number[]) => {
+  for (let i = fromIndex - 1; i > toIndex; i--) {
+    if (isPieceOrOutOfBounds(board[i])) {
+      return false;
+    }
+  }
+  return true;
+};
+const canMoveDownTo = (fromIndex: number, toIndex: number, board: number[]) => {
+  for (let i = fromIndex + lengthOfBoard; i < toIndex; i += lengthOfBoard) {
+    if (isPieceOrOutOfBounds(board[i])) {
+      return false;
+    }
+  }
+  return true;
+};
+const canMoveUpTo = (fromIndex: number, toIndex: number, board: number[]) => {
+  for (let i = fromIndex - lengthOfBoard; i > toIndex; i -= lengthOfBoard) {
+    if (isPieceOrOutOfBounds(board[i])) {
+      return false;
+    }
+  }
+  return true;
 };
