@@ -112,7 +112,9 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
         toIndex + lengthOfBoard === fromIndex &&
         toSquareContent === ChessPiece.None;
       const canMoveTwoStepToEmptySquareWhenAtStartingPosition =
-        toIndex + 2 * lengthOfBoard === fromIndex && move.from.rank === 2;
+        canMoveUpTo(fromIndex, toIndex, board) &&
+        toIndex + 2 * lengthOfBoard === fromIndex &&
+        move.from.rank === 2;
       const canCaptureDiagonalOneStep =
         isBlackPiece(toSquareContent) &&
         (toIndex + 9 === fromIndex || toIndex + 11 === fromIndex);
@@ -127,7 +129,9 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
         toIndex - lengthOfBoard === fromIndex &&
         toSquareContent === ChessPiece.None;
       const canMoveTwoStepToEmptySquareWhenAtStartingPosition =
-        toIndex - 2 * lengthOfBoard === fromIndex && move.from.rank === 7;
+        canMoveDownTo(fromIndex, toIndex, board) &&
+        toIndex - 2 * lengthOfBoard === fromIndex &&
+        move.from.rank === 7;
       const canCaptureDiagonalOneStep =
         isWhitePiece(toSquareContent) &&
         (toIndex - 9 === fromIndex || toIndex - 11 === fromIndex);
