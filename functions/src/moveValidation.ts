@@ -180,8 +180,91 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
       }
       return false;
     }
+
+    case ChessPiece.WhiteBishop:
+    case ChessPiece.BlackBishop: {
+      if (move.from.file !== move.to.file && move.from.rank !== move.to.rank) {
+        if (fromIndex - toIndex < 0) {
+          return (
+            canMoveDownLeft(fromIndex, toIndex, board) ||
+            canMoveDownRight(fromIndex, toIndex, board)
+          );
+        } else {
+          return (
+            canMoveUpLeft(fromIndex, toIndex, board) ||
+            canMoveUpRight(fromIndex, toIndex, board)
+          );
+        }
+      }
+
+      return false;
+    }
     default:
       console.log("Could not find matching chess piece!");
       return false;
   }
+};
+
+const canMoveUpLeft = (fromIndex: number, toIndex: number, board: number[]) => {
+  for (
+    let i = fromIndex - (lengthOfBoard + 1);
+    i > toIndex;
+    i -= lengthOfBoard + 1
+  ) {
+    if (isPieceOrOutOfBounds(board[i])) {
+      return false;
+    }
+  }
+  return true;
+};
+
+const canMoveUpRight = (
+  fromIndex: number,
+  toIndex: number,
+  board: number[]
+) => {
+  for (
+    let i = fromIndex - (lengthOfBoard - 1);
+    i > toIndex;
+    i -= lengthOfBoard - 1
+  ) {
+    if (isPieceOrOutOfBounds(board[i])) {
+      return false;
+    }
+  }
+  return true;
+};
+
+const canMoveDownLeft = (
+  fromIndex: number,
+  toIndex: number,
+  board: number[]
+) => {
+  for (
+    let i = fromIndex + (lengthOfBoard - 1);
+    i < toIndex;
+    i += lengthOfBoard - 1
+  ) {
+    if (isPieceOrOutOfBounds(board[i])) {
+      return false;
+    }
+  }
+  return true;
+};
+
+const canMoveDownRight = (
+  fromIndex: number,
+  toIndex: number,
+  board: number[]
+) => {
+  for (
+    let i = fromIndex + (lengthOfBoard + 1);
+    i < toIndex;
+    i += lengthOfBoard + 1
+  ) {
+    if (isPieceOrOutOfBounds(board[i])) {
+      return false;
+    }
+  }
+  return true;
 };

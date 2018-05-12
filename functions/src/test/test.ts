@@ -555,7 +555,5 @@ describe('checkIfMoveIsValid', () => {
         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
       ])).equal(false);
     });
-  })
-})
-
-// kun liikutat sotilas kaksi ruutu tsekkaa että välissä ei ole nappuloita
+  });
+});
