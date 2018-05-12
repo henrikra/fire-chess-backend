@@ -16,7 +16,7 @@ describe("bishop", () => {
     -1, 2, 3, 4, 5, 6, 4, 3, 2, -1, // 90 - 99
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-  ]
+  ];
   
   it("moves up left", () => {
     expect(
@@ -51,6 +51,65 @@ describe("bishop", () => {
         from: { file: "f", rank: 8 },
         to: { file: "h", rank: 6 }
       }, fourPawnsMovedOutOfTheWay)
+    ).equal(true);
+  });
+
+  const bishopInTheMiddle = [
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, 8, 9, 10, 11, 12, 10, 9, 8, -1,
+    -1, 7, 7, 7, 7, 7, 7, 0, 7, -1,
+    -1, 0, 0, 0, 0, 0, 7, 0, 0, -1,
+    -1, 0, 0, 0, 0, 4, 0, 0, 0, -1,
+    -1, 0, 0, 0, 0, 0, 1, 0, 0, -1,
+    -1, 0, 0, 1, 0, 0, 0, 0, 0, -1, // 70 - 79
+    -1, 1, 0, 1, 1, 1, 0, 1, 1, -1, // 80 - 89
+    -1, 2, 3, 0, 5, 6, 4, 3, 2, -1, // 90 - 99
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+  ];
+  it("cannot move through own", () => {
+    expect(
+      checkIfMoveIsValid({
+        from: { file: "e", rank: 5 },
+        to: { file: "b", rank: 2 }
+      }, bishopInTheMiddle)
+    ).equal(false);
+  });
+
+  it("cannot move through own when own is right next to", () => {
+    expect(
+      checkIfMoveIsValid({
+        from: { file: "e", rank: 5 },
+        to: { file: "g", rank: 3 }
+      }, bishopInTheMiddle)
+    ).equal(false);
+  });
+
+  it("cannot move horizontal", () => {
+    expect(
+      checkIfMoveIsValid({
+        from: { file: "e", rank: 5 },
+        to: { file: "a", rank: 5 }
+      }, bishopInTheMiddle)
+    ).equal(false);
+  });
+
+  it("cannot capture through enemy", () => {
+    expect(
+      checkIfMoveIsValid({
+        from: { file: "e", rank: 5 },
+        to: { file: "g", rank: 8 }
+      }, bishopInTheMiddle)
+    ).equal(false);
+  });
+
+  it("captures enemy pieces", () => {
+    expect(
+      checkIfMoveIsValid({
+        from: { file: "e", rank: 5 },
+        to: { file: "c", rank: 7 }
+      }, bishopInTheMiddle)
     ).equal(true);
   });
 });
