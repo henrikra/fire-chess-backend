@@ -90,6 +90,70 @@ const canMoveUpTo = (fromIndex: number, toIndex: number, board: number[]) => {
   return true;
 };
 
+const canMoveUpLeft = (fromIndex: number, toIndex: number, board: number[]) => {
+  for (
+    let i = fromIndex - (lengthOfBoard + 1);
+    i > toIndex;
+    i -= lengthOfBoard + 1
+  ) {
+    if (isPieceOrOutOfBounds(board[i])) {
+      return false;
+    }
+  }
+  return true;
+};
+
+const canMoveUpRight = (
+  fromIndex: number,
+  toIndex: number,
+  board: number[]
+) => {
+  for (
+    let i = fromIndex - (lengthOfBoard - 1);
+    i > toIndex;
+    i -= lengthOfBoard - 1
+  ) {
+    if (isPieceOrOutOfBounds(board[i])) {
+      return false;
+    }
+  }
+  return true;
+};
+
+const canMoveDownLeft = (
+  fromIndex: number,
+  toIndex: number,
+  board: number[]
+) => {
+  for (
+    let i = fromIndex + (lengthOfBoard - 1);
+    i < toIndex;
+    i += lengthOfBoard - 1
+  ) {
+    if (isPieceOrOutOfBounds(board[i])) {
+      return false;
+    }
+  }
+  return true;
+};
+
+const canMoveDownRight = (
+  fromIndex: number,
+  toIndex: number,
+  board: number[]
+) => {
+  for (
+    let i = fromIndex + (lengthOfBoard + 1);
+    i < toIndex;
+    i += lengthOfBoard + 1
+  ) {
+    if (isPieceOrOutOfBounds(board[i])) {
+      return false;
+    }
+  }
+  return true;
+};
+
 export const checkIfMoveIsValid = (move: Move, board: number[]) => {
   const fromIndex = squareToIndexOnBoard(move.from);
   const toIndex = squareToIndexOnBoard(move.to);
@@ -205,66 +269,4 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
   }
 };
 
-const canMoveUpLeft = (fromIndex: number, toIndex: number, board: number[]) => {
-  for (
-    let i = fromIndex - (lengthOfBoard + 1);
-    i > toIndex;
-    i -= lengthOfBoard + 1
-  ) {
-    if (isPieceOrOutOfBounds(board[i])) {
-      return false;
-    }
-  }
-  return true;
-};
 
-const canMoveUpRight = (
-  fromIndex: number,
-  toIndex: number,
-  board: number[]
-) => {
-  for (
-    let i = fromIndex - (lengthOfBoard - 1);
-    i > toIndex;
-    i -= lengthOfBoard - 1
-  ) {
-    if (isPieceOrOutOfBounds(board[i])) {
-      return false;
-    }
-  }
-  return true;
-};
-
-const canMoveDownLeft = (
-  fromIndex: number,
-  toIndex: number,
-  board: number[]
-) => {
-  for (
-    let i = fromIndex + (lengthOfBoard - 1);
-    i < toIndex;
-    i += lengthOfBoard - 1
-  ) {
-    if (isPieceOrOutOfBounds(board[i])) {
-      return false;
-    }
-  }
-  return true;
-};
-
-const canMoveDownRight = (
-  fromIndex: number,
-  toIndex: number,
-  board: number[]
-) => {
-  for (
-    let i = fromIndex + (lengthOfBoard + 1);
-    i < toIndex;
-    i += lengthOfBoard + 1
-  ) {
-    if (isPieceOrOutOfBounds(board[i])) {
-      return false;
-    }
-  }
-  return true;
-};
