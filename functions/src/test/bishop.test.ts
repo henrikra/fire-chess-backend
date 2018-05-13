@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import "mocha";
-import { checkIfMoveIsValid } from "../../moveValidation";
+import { checkIfMoveIsValid } from "../moveValidation";
 
 describe("bishop", () => {
   const fourPawnsMovedOutOfTheWay = [
