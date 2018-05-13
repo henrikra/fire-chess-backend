@@ -154,6 +154,53 @@ const canMoveDownRight = (
   return true;
 };
 
+const isValidRookMove = (
+  move: Move,
+  fromIndex: number,
+  toIndex: number,
+  board: number[]
+) => {
+  if (move.from.file === move.to.file) {
+    if (move.from.rank < move.to.rank) {
+      return canMoveUpTo(fromIndex, toIndex, board);
+    }
+    return canMoveDownTo(fromIndex, toIndex, board);
+  } else if (move.from.rank === move.to.rank) {
+    if (FileIndex[move.from.file] < FileIndex[move.to.file]) {
+      return canMoveRightTo(fromIndex, toIndex, board);
+    }
+    return canMoveLeftTo(fromIndex, toIndex, board);
+  }
+  return false;
+};
+
+const isValidBishopMove = (
+  move: Move,
+  fromIndex: number,
+  toIndex: number,
+  board: number[]
+) => {
+  const fileDifference = Math.abs(
+    FileIndex[move.from.file] - FileIndex[move.to.file]
+  );
+  const rankDifference = Math.abs(move.from.rank - move.to.rank);
+  if (fileDifference === rankDifference) {
+    if (fromIndex - toIndex < 0) {
+      return (
+        canMoveDownLeft(fromIndex, toIndex, board) ||
+        canMoveDownRight(fromIndex, toIndex, board)
+      );
+    } else {
+      return (
+        canMoveUpLeft(fromIndex, toIndex, board) ||
+        canMoveUpRight(fromIndex, toIndex, board)
+      );
+    }
+  }
+
+  return false;
+};
+
 export const checkIfMoveIsValid = (move: Move, board: number[]) => {
   const fromIndex = squareToIndexOnBoard(move.from);
   const toIndex = squareToIndexOnBoard(move.to);
@@ -231,42 +278,22 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
     }
     case ChessPiece.BlackRook:
     case ChessPiece.WhiteRook: {
-      if (move.from.file === move.to.file) {
-        if (move.from.rank < move.to.rank) {
-          return canMoveUpTo(fromIndex, toIndex, board);
-        }
-        return canMoveDownTo(fromIndex, toIndex, board);
-      } else if (move.from.rank === move.to.rank) {
-        if (FileIndex[move.from.file] < FileIndex[move.to.file]) {
-          return canMoveRightTo(fromIndex, toIndex, board);
-        }
-        return canMoveLeftTo(fromIndex, toIndex, board);
-      }
-      return false;
+      return isValidRookMove(move, fromIndex, toIndex, board);
     }
 
     case ChessPiece.WhiteBishop:
     case ChessPiece.BlackBishop: {
-      const fileDifference = Math.abs(
-        FileIndex[move.from.file] - FileIndex[move.to.file]
-      );
-      const rankDifference = Math.abs(move.from.rank - move.to.rank);
-      if (fileDifference === rankDifference) {
-        if (fromIndex - toIndex < 0) {
-          return (
-            canMoveDownLeft(fromIndex, toIndex, board) ||
-            canMoveDownRight(fromIndex, toIndex, board)
-          );
-        } else {
-          return (
-            canMoveUpLeft(fromIndex, toIndex, board) ||
-            canMoveUpRight(fromIndex, toIndex, board)
-          );
-        }
-      }
-
-      return false;
+      return isValidBishopMove(move, fromIndex, toIndex, board);
     }
+
+    case ChessPiece.WhiteQueen:
+    case ChessPiece.BlackQueen: {
+      return (
+        isValidRookMove(move, fromIndex, toIndex, board) ||
+        isValidBishopMove(move, fromIndex, toIndex, board)
+      );
+    }
+
     default:
       console.log("Could not find matching chess piece!");
       return false;
