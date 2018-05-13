@@ -183,13 +183,15 @@ const isValidBishopMove = (
   const fileDifference = FileIndex[move.from.file] - FileIndex[move.to.file];
   const rankDifference = move.from.rank - move.to.rank;
   if (Math.abs(fileDifference) === Math.abs(rankDifference)) {
-    if (fromIndex - toIndex < 0) {
-      return (
-        canMoveDownLeft(fromIndex, toIndex, board) ||
-        canMoveDownRight(fromIndex, toIndex, board)
-      );
+    const isGoingRight = fileDifference < 0;
+    const isGoingDown = rankDifference > 0;
+    if (isGoingDown) {
+      if (isGoingRight) {
+        return canMoveDownRight(fromIndex, toIndex, board);
+      }
+      return canMoveDownLeft(fromIndex, toIndex, board);
     } else {
-      if (fileDifference < 0) {
+      if (isGoingRight) {
         return canMoveUpRight(fromIndex, toIndex, board);
       }
       return canMoveUpLeft(fromIndex, toIndex, board);
