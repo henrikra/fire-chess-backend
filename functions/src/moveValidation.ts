@@ -1,7 +1,9 @@
 import { isValidBishopMove } from "./bishop";
 import { isValidRookMove } from "./rook";
+import { isValidKnightMove } from "./knight";
+import { isValidWhitePawnMove, isValidBlackPawnMove } from "./pawn";
 
-enum ChessPiece {
+export enum ChessPiece {
   None,
   WhitePawn,
   WhiteRook,
@@ -29,7 +31,7 @@ export const FileIndex = {
 };
 
 const bottomLeftIndex = 91;
-const lengthOfBoard = 10;
+export const lengthOfBoard = 10;
 export const squareToIndexOnBoard = (square: Square) =>
   bottomLeftIndex - (square.rank - 1) * lengthOfBoard + FileIndex[square.file];
 export const isBlackPiece = (piece: ChessPiece) =>
@@ -68,7 +70,11 @@ export const canMoveRightTo = (
   }
   return true;
 };
-export const canMoveLeftTo = (fromIndex: number, toIndex: number, board: number[]) => {
+export const canMoveLeftTo = (
+  fromIndex: number,
+  toIndex: number,
+  board: number[]
+) => {
   for (let i = fromIndex - 1; i > toIndex; i--) {
     if (isPieceOrOutOfBounds(board[i])) {
       return false;
@@ -76,7 +82,11 @@ export const canMoveLeftTo = (fromIndex: number, toIndex: number, board: number[
   }
   return true;
 };
-export const canMoveDownTo = (fromIndex: number, toIndex: number, board: number[]) => {
+export const canMoveDownTo = (
+  fromIndex: number,
+  toIndex: number,
+  board: number[]
+) => {
   for (let i = fromIndex + lengthOfBoard; i < toIndex; i += lengthOfBoard) {
     if (isPieceOrOutOfBounds(board[i])) {
       return false;
@@ -84,7 +94,11 @@ export const canMoveDownTo = (fromIndex: number, toIndex: number, board: number[
   }
   return true;
 };
-export const canMoveUpTo = (fromIndex: number, toIndex: number, board: number[]) => {
+export const canMoveUpTo = (
+  fromIndex: number,
+  toIndex: number,
+  board: number[]
+) => {
   for (let i = fromIndex - lengthOfBoard; i > toIndex; i -= lengthOfBoard) {
     if (isPieceOrOutOfBounds(board[i])) {
       return false;
@@ -93,7 +107,11 @@ export const canMoveUpTo = (fromIndex: number, toIndex: number, board: number[])
   return true;
 };
 
-export const canMoveUpLeft = (fromIndex: number, toIndex: number, board: number[]) => {
+export const canMoveUpLeft = (
+  fromIndex: number,
+  toIndex: number,
+  board: number[]
+) => {
   for (
     let i = fromIndex - (lengthOfBoard + 1);
     i > toIndex;
@@ -175,62 +193,26 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
 
   switch (chessPieceToBeMoved) {
     case ChessPiece.WhitePawn: {
-      const canMoveOneStepToEmptySquare =
-        toIndex + lengthOfBoard === fromIndex &&
-        toSquareContent === ChessPiece.None;
-      const canMoveTwoStepToEmptySquareWhenAtStartingPosition =
-        canMoveUpTo(fromIndex, toIndex, board) &&
-        toIndex + 2 * lengthOfBoard === fromIndex &&
-        move.from.rank === 2;
-      const canCaptureDiagonalOneStep =
-        isBlackPiece(toSquareContent) &&
-        (toIndex + 9 === fromIndex || toIndex + 11 === fromIndex);
-      return (
-        canMoveOneStepToEmptySquare ||
-        canMoveTwoStepToEmptySquareWhenAtStartingPosition ||
-        canCaptureDiagonalOneStep
+      return isValidWhitePawnMove(
+        move,
+        fromIndex,
+        toIndex,
+        board,
+        toSquareContent
       );
     }
     case ChessPiece.BlackPawn: {
-      const canMoveOneStepToEmptySquare =
-        toIndex - lengthOfBoard === fromIndex &&
-        toSquareContent === ChessPiece.None;
-      const canMoveTwoStepToEmptySquareWhenAtStartingPosition =
-        canMoveDownTo(fromIndex, toIndex, board) &&
-        toIndex - 2 * lengthOfBoard === fromIndex &&
-        move.from.rank === 7;
-      const canCaptureDiagonalOneStep =
-        isWhitePiece(toSquareContent) &&
-        (toIndex - 9 === fromIndex || toIndex - 11 === fromIndex);
-      return (
-        canMoveOneStepToEmptySquare ||
-        canMoveTwoStepToEmptySquareWhenAtStartingPosition ||
-        canCaptureDiagonalOneStep
+      return isValidBlackPawnMove(
+        move,
+        fromIndex,
+        toIndex,
+        board,
+        toSquareContent
       );
     }
     case ChessPiece.BlackKnight:
     case ChessPiece.WhiteKnight: {
-      const canMoveTwoUpOneLeft = fromIndex - 2 * lengthOfBoard - 1 === toIndex;
-      const canMoveTwoUpOneRight =
-        fromIndex - 2 * lengthOfBoard + 1 === toIndex;
-      const canMoveTwoDownOneLeft =
-        fromIndex + 2 * lengthOfBoard - 1 === toIndex;
-      const canMoveTwoDownOneRight =
-        fromIndex + 2 * lengthOfBoard + 1 === toIndex;
-      const canMoveTwoLeftOneUp = fromIndex - 2 - lengthOfBoard === toIndex;
-      const canMoveTwoLeftOneDown = fromIndex - 2 + lengthOfBoard === toIndex;
-      const canMoveTwoRightOneUp = fromIndex + 2 - lengthOfBoard === toIndex;
-      const canMoveTwoRightOneDown = fromIndex + 2 + lengthOfBoard === toIndex;
-      return (
-        canMoveTwoUpOneLeft ||
-        canMoveTwoUpOneRight ||
-        canMoveTwoDownOneLeft ||
-        canMoveTwoDownOneRight ||
-        canMoveTwoLeftOneUp ||
-        canMoveTwoLeftOneDown ||
-        canMoveTwoRightOneUp ||
-        canMoveTwoRightOneDown
-      );
+      return isValidKnightMove(move, fromIndex, toIndex, board);
     }
     case ChessPiece.BlackRook:
     case ChessPiece.WhiteRook: {
