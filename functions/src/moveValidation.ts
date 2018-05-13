@@ -1,3 +1,6 @@
+import { isValidBishopMove } from "./bishop";
+import { isValidRookMove } from "./rook";
+
 enum ChessPiece {
   None,
   WhitePawn,
@@ -14,7 +17,7 @@ enum ChessPiece {
   BlackKing
 }
 
-const FileIndex = {
+export const FileIndex = {
   a: 0,
   b: 1,
   c: 2,
@@ -53,7 +56,7 @@ export const isWhiteOrBlackPiece = (piece: ChessPiece) =>
 const isPieceOrOutOfBounds = (content: number) =>
   content === -1 || isWhiteOrBlackPiece(content);
 
-const canMoveRightTo = (
+export const canMoveRightTo = (
   fromIndex: number,
   toIndex: number,
   board: number[]
@@ -65,7 +68,7 @@ const canMoveRightTo = (
   }
   return true;
 };
-const canMoveLeftTo = (fromIndex: number, toIndex: number, board: number[]) => {
+export const canMoveLeftTo = (fromIndex: number, toIndex: number, board: number[]) => {
   for (let i = fromIndex - 1; i > toIndex; i--) {
     if (isPieceOrOutOfBounds(board[i])) {
       return false;
@@ -73,7 +76,7 @@ const canMoveLeftTo = (fromIndex: number, toIndex: number, board: number[]) => {
   }
   return true;
 };
-const canMoveDownTo = (fromIndex: number, toIndex: number, board: number[]) => {
+export const canMoveDownTo = (fromIndex: number, toIndex: number, board: number[]) => {
   for (let i = fromIndex + lengthOfBoard; i < toIndex; i += lengthOfBoard) {
     if (isPieceOrOutOfBounds(board[i])) {
       return false;
@@ -81,7 +84,7 @@ const canMoveDownTo = (fromIndex: number, toIndex: number, board: number[]) => {
   }
   return true;
 };
-const canMoveUpTo = (fromIndex: number, toIndex: number, board: number[]) => {
+export const canMoveUpTo = (fromIndex: number, toIndex: number, board: number[]) => {
   for (let i = fromIndex - lengthOfBoard; i > toIndex; i -= lengthOfBoard) {
     if (isPieceOrOutOfBounds(board[i])) {
       return false;
@@ -90,7 +93,7 @@ const canMoveUpTo = (fromIndex: number, toIndex: number, board: number[]) => {
   return true;
 };
 
-const canMoveUpLeft = (fromIndex: number, toIndex: number, board: number[]) => {
+export const canMoveUpLeft = (fromIndex: number, toIndex: number, board: number[]) => {
   for (
     let i = fromIndex - (lengthOfBoard + 1);
     i > toIndex;
@@ -103,7 +106,7 @@ const canMoveUpLeft = (fromIndex: number, toIndex: number, board: number[]) => {
   return true;
 };
 
-const canMoveUpRight = (
+export const canMoveUpRight = (
   fromIndex: number,
   toIndex: number,
   board: number[]
@@ -120,7 +123,7 @@ const canMoveUpRight = (
   return true;
 };
 
-const canMoveDownLeft = (
+export const canMoveDownLeft = (
   fromIndex: number,
   toIndex: number,
   board: number[]
@@ -137,7 +140,7 @@ const canMoveDownLeft = (
   return true;
 };
 
-const canMoveDownRight = (
+export const canMoveDownRight = (
   fromIndex: number,
   toIndex: number,
   board: number[]
@@ -152,53 +155,6 @@ const canMoveDownRight = (
     }
   }
   return true;
-};
-
-const isValidRookMove = (
-  move: Move,
-  fromIndex: number,
-  toIndex: number,
-  board: number[]
-) => {
-  if (move.from.file === move.to.file) {
-    if (move.from.rank < move.to.rank) {
-      return canMoveUpTo(fromIndex, toIndex, board);
-    }
-    return canMoveDownTo(fromIndex, toIndex, board);
-  } else if (move.from.rank === move.to.rank) {
-    if (FileIndex[move.from.file] < FileIndex[move.to.file]) {
-      return canMoveRightTo(fromIndex, toIndex, board);
-    }
-    return canMoveLeftTo(fromIndex, toIndex, board);
-  }
-  return false;
-};
-
-const isValidBishopMove = (
-  move: Move,
-  fromIndex: number,
-  toIndex: number,
-  board: number[]
-) => {
-  const fileDifference = FileIndex[move.from.file] - FileIndex[move.to.file];
-  const rankDifference = move.from.rank - move.to.rank;
-  if (Math.abs(fileDifference) === Math.abs(rankDifference)) {
-    const isGoingRight = fileDifference < 0;
-    const isGoingDown = rankDifference > 0;
-    if (isGoingDown) {
-      if (isGoingRight) {
-        return canMoveDownRight(fromIndex, toIndex, board);
-      }
-      return canMoveDownLeft(fromIndex, toIndex, board);
-    } else {
-      if (isGoingRight) {
-        return canMoveUpRight(fromIndex, toIndex, board);
-      }
-      return canMoveUpLeft(fromIndex, toIndex, board);
-    }
-  }
-
-  return false;
 };
 
 export const checkIfMoveIsValid = (move: Move, board: number[]) => {
