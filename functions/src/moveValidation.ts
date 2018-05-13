@@ -247,7 +247,11 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
 
     case ChessPiece.WhiteBishop:
     case ChessPiece.BlackBishop: {
-      if (move.from.file !== move.to.file && move.from.rank !== move.to.rank) {
+      const fileDifference = Math.abs(
+        FileIndex[move.from.file] - FileIndex[move.to.file]
+      );
+      const rankDifference = Math.abs(move.from.rank - move.to.rank);
+      if (fileDifference === rankDifference) {
         if (fromIndex - toIndex < 0) {
           return (
             canMoveDownLeft(fromIndex, toIndex, board) ||
@@ -268,5 +272,3 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
       return false;
   }
 };
-
-
