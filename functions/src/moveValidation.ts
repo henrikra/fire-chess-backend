@@ -2,6 +2,7 @@ import { isValidBishopMove } from "./bishop";
 import { isValidRookMove } from "./rook";
 import { isValidKnightMove } from "./knight";
 import { isValidWhitePawnMove, isValidBlackPawnMove } from "./pawn";
+import { isValidKingMove } from "./King";
 
 export enum ChessPiece {
   None,
@@ -230,6 +231,11 @@ export const checkIfMoveIsValid = (move: Move, board: number[]) => {
         isValidRookMove(move, fromIndex, toIndex, board) ||
         isValidBishopMove(move, fromIndex, toIndex, board)
       );
+    }
+
+    case ChessPiece.WhiteKing:
+    case ChessPiece.BlackKing: {
+      return isValidKingMove(move, fromIndex, toIndex, board);
     }
 
     default:
