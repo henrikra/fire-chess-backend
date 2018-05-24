@@ -19,7 +19,14 @@ export default async (req: Request, res: Response) => {
 
   try {
     const roomDoc = await roomsRef.doc(roomId).get();
-    const currentMoves = roomDoc.data().moves;
+    const { moves, surrenderColor } = roomDoc.data() as RoomModel;
+
+    if (!!surrenderColor) {
+      res
+        .status(403)
+        .send({ error: "Can't move pieces in a game that is over" });
+      return;
+    }
 
     const roomPlayersDoc = await roomDoc.ref
       .collection("roomPlayers")
@@ -37,7 +44,7 @@ export default async (req: Request, res: Response) => {
       return;
     }
 
-    const isWhiteTurn = currentMoves.length % 2 === 0;
+    const isWhiteTurn = moves.length % 2 === 0;
     const isBlackTurn = !isWhiteTurn;
     if (isWhiteTurn && userId !== whitePlayerId) {
       res
@@ -52,7 +59,7 @@ export default async (req: Request, res: Response) => {
       return;
     }
 
-    const currentBoard = calculateNewBoard(initialBoard, currentMoves);
+    const currentBoard = calculateNewBoard(initialBoard, moves);
 
     const fromBoardIndex = squareToIndexOnBoard(from); // nämä kaksi riviä ovat identtiset moveValidation.ts kanssa
     const fromChessPiece = currentBoard[fromBoardIndex]; //
@@ -80,7 +87,7 @@ export default async (req: Request, res: Response) => {
         numberOfPiecesInTableAfterMove < numberOfPiecesInCurrentTable;
 
       try {
-        const newMoves = [...currentMoves, { from, to, hasCaptureHappened }];
+        const newMoves = [...moves, { from, to, hasCaptureHappened }];
         await roomDoc.ref.update({ moves: newMoves });
         res.send({ moves: newMoves });
       } catch (error) {
