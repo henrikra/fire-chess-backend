@@ -33,3 +33,14 @@ interface WhoAmIRequest {
   roomId: string;
   userId: string;
 }
+
+interface SurrenderRequest {
+  roomId: string;
+  userId: string;
+}
+
+interface RoomModel {
+  isGameFull: boolean;
+  moves: Move[];
+  surrenderColor?: string;
+}
