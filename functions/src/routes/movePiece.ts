@@ -6,7 +6,8 @@ import {
   isBlackPiece,
   isWhitePiece,
   isWhiteOrBlackPiece,
-  squareToIndexOnBoard
+  squareToIndexOnBoard,
+  ChessPiece
 } from "../moveValidation";
 import { Request, Response } from "express";
 
@@ -86,9 +87,23 @@ export default async (req: Request, res: Response) => {
       const hasCaptureHappened =
         numberOfPiecesInTableAfterMove < numberOfPiecesInCurrentTable;
 
+      const whiteKing = boardAfterMove.find(
+        piece => piece === ChessPiece.WhiteKing
+      );
+      const blackKing = boardAfterMove.find(
+        piece => piece === ChessPiece.BlackKing
+      );
+
       try {
         const newMoves = [...moves, { from, to, hasCaptureHappened }];
-        await roomDoc.ref.update({ moves: newMoves });
+        await roomDoc.ref.update(
+          Object.assign(
+            { moves: newMoves },
+            !whiteKing || !blackKing
+              ? { winnerColor: !!whiteKing ? "white" : "black" }
+              : undefined
+          )
+        );
         res.send({ moves: newMoves });
       } catch (error) {
         console.error("Error updating moves", error);
