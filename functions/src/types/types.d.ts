@@ -42,5 +42,5 @@ interface SurrenderRequest {
 interface RoomModel {
   isGameFull: boolean;
   moves: Move[];
-  surrenderColor?: string;
+  winnerColor?: string;
 }

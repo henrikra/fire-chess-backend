@@ -19,9 +19,9 @@ export default async (req: Request, res: Response) => {
 
   try {
     const roomDoc = await roomsRef.doc(roomId).get();
-    const { moves, surrenderColor } = roomDoc.data() as RoomModel;
+    const { moves, winnerColor } = roomDoc.data() as RoomModel;
 
-    if (!!surrenderColor) {
+    if (!!winnerColor) {
       res
         .status(403)
         .send({ error: "Can't move pieces in a game that is over" });

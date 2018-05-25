@@ -20,13 +20,13 @@ export default async (req: Request, res: Response) => {
     return;
   }
   const room = await roomRef.get();
-  const { isGameFull, surrenderColor } = room.data() as RoomModel;
+  const { isGameFull, winnerColor } = room.data() as RoomModel;
   if (!isGameFull) {
     res
       .status(403)
       .send({ error: "Can't surrender from a game which is not full yet" });
     return;
-  } else if (!!surrenderColor) {
+  } else if (!!winnerColor) {
     res
       .status(403)
       .send({ error: "Can't surrender from a game which is over" });
@@ -34,7 +34,7 @@ export default async (req: Request, res: Response) => {
   }
 
   await roomRef.update({
-    surrenderColor: whitePlayerId === userId ? "white" : "black"
+    winnerColor: whitePlayerId === userId ? "black" : "white"
   });
   res.send({ success: "You have surrendered" });
 };
