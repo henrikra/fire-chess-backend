@@ -13,14 +13,7 @@ const myRole = (userId: string, roomPlayers: RoomPlayersModel) => {
 
 export default async (req: Request, res: Response) => {
   const { roomId, userId }: WhoAmIRequest = req.query;
-  if (!roomId) {
-    res.status(400).send({ error: "No room specified" });
-    return;
-  }
-  if (!userId) {
-    res.status(400).send({ error: "No user specified" });
-    return;
-  }
+  
   try {
     const roomPlayers = await roomsRef
       .doc(roomId)

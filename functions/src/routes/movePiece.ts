@@ -13,10 +13,6 @@ import { Request, Response } from "express";
 
 export default async (req: Request, res: Response) => {
   const { from, to, roomId, userId }: MovePieceRequest = req.body;
-  if (!userId) {
-    res.status(400).send({ error: "User is missing" });
-    return;
-  }
 
   try {
     const roomDoc = await roomsRef.doc(roomId).get();

@@ -7,21 +7,40 @@ import joinGame from "./routes/joinGame";
 import movePiece from "./routes/movePiece";
 import surrender from "./routes/surrender";
 
-const validateMiddleware = (requiredFields: string[]) => (
+const findMissingFields = (fields: object, requiredFields: string[]) => {
+  const foundFields = Object.keys(fields);
+  return requiredFields.filter(
+    requiredField => !foundFields.includes(requiredField)
+  );
+};
+
+const validateBodyMiddleware = (requiredFields: string[]) => (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) => {
-  const foundFields = Object.keys(req.body);
-  const missingFields = requiredFields.filter(
-    requiredField => !foundFields.includes(requiredField)
-  );
+  const missingFields = findMissingFields(req.body, requiredFields);
   if (!missingFields.length) {
     next();
   } else {
     res
       .status(400)
-      .send({ error: `Missing fields: ${missingFields.join(", ")}` });
+      .send({ error: `Missing body fields: ${missingFields.join(", ")}` });
+  }
+};
+
+const validateQueryMiddleware = (requiredFields: string[]) => (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  const missingFields = findMissingFields(req.query, requiredFields);
+  if (!missingFields.length) {
+    next();
+  } else {
+    res
+      .status(400)
+      .send({ error: `Missing query params: ${missingFields.join(", ")}` });
   }
 };
 
@@ -29,10 +48,14 @@ const cors = require("cors")({ origin: true });
 const app = express();
 app.use(cors);
 
-app.post("/addRoom", validateMiddleware(["userId"]), createRoom);
-app.post("/joinGame", joinGame);
-app.get("/roomInfo", roomInfo);
-app.post("/movePiece", movePiece);
-app.post("/surrender", surrender);
+app.post("/addRoom", validateBodyMiddleware(["userId"]), createRoom);
+app.post("/joinGame", validateBodyMiddleware(["userId", "roomId"]), joinGame);
+app.get("/roomInfo", validateQueryMiddleware(["userId", "roomId"]), roomInfo);
+app.post(
+  "/movePiece",
+  validateBodyMiddleware(["userId", "roomId", "from", "to"]),
+  movePiece
+);
+app.post("/surrender", validateBodyMiddleware(["userId", "roomId"]), surrender);
 
 exports.app = functions.https.onRequest(app);

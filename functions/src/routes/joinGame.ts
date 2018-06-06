@@ -3,14 +3,6 @@ import { Request, Response } from "express";
 
 export default async (req: Request, res: Response) => {
   const { roomId, userId }: JoinGameRequest = req.body;
-  if (!roomId) {
-    res.status(400).send({ error: "No room specified" });
-    return;
-  }
-  if (!userId) {
-    res.status(400).send({ error: "No user specified" });
-    return;
-  }
 
   try {
     const roomRef = roomsRef.doc(roomId);
