@@ -3,10 +3,6 @@ import { Request, Response } from "express";
 
 export default async (req: Request, res: Response) => {
   const { userId }: CreateRoomRequest = req.body;
-  if (!userId) {
-    res.status(400).send({ error: "User is missing" });
-    return;
-  }
 
   try {
     const isWhite = Math.random() < 0.5;
