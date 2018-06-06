@@ -6,43 +6,7 @@ import roomInfo from "./routes/roomInfo";
 import joinGame from "./routes/joinGame";
 import movePiece from "./routes/movePiece";
 import surrender from "./routes/surrender";
-
-const findMissingFields = (fields: object, requiredFields: string[]) => {
-  const foundFields = Object.keys(fields);
-  return requiredFields.filter(
-    requiredField => !foundFields.includes(requiredField)
-  );
-};
-
-const validateBodyMiddleware = (requiredFields: string[]) => (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
-) => {
-  const missingFields = findMissingFields(req.body, requiredFields);
-  if (!missingFields.length) {
-    next();
-  } else {
-    res
-      .status(400)
-      .send({ error: `Missing body fields: ${missingFields.join(", ")}` });
-  }
-};
-
-const validateQueryMiddleware = (requiredFields: string[]) => (
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
-) => {
-  const missingFields = findMissingFields(req.query, requiredFields);
-  if (!missingFields.length) {
-    next();
-  } else {
-    res
-      .status(400)
-      .send({ error: `Missing query params: ${missingFields.join(", ")}` });
-  }
-};
+import { validateBodyMiddleware, validateQueryMiddleware } from "./middlewares";
 
 const cors = require("cors")({ origin: true });
 const app = express();
