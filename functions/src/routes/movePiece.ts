@@ -58,8 +58,8 @@ export default async (req: Request, res: Response) => {
 
     const currentBoard = calculateNewBoard(initialBoard, moves);
 
-    const fromBoardIndex = squareToIndexOnBoard(from); // nämä kaksi riviä ovat identtiset moveValidation.ts kanssa
-    const fromChessPiece = currentBoard[fromBoardIndex]; //
+    const fromBoardIndex = squareToIndexOnBoard(from);
+    const fromChessPiece = currentBoard[fromBoardIndex];
     if (
       (isWhiteTurn && !isWhitePiece(fromChessPiece)) ||
       (isBlackTurn && !isBlackPiece(fromChessPiece))
